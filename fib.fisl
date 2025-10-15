@@ -1,0 +1,16 @@
+
+label main
+    let a be 1
+    let b be 1
+
+label loop
+    let c be a plus b
+    let a be b
+    let b be c
+
+    print a
+
+    if a lesser 10000 goto loop
+
+
+
