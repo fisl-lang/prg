@@ -1,0 +1,16 @@
+
+use stack
+use flow
+use math
+
+label main
+    push 3
+    push 4
+
+    call math::mul
+
+    pull _
+    print _
+
+
+
