@@ -1,0 +1,55 @@
+
+use stack
+use flow
+use heap
+
+
+label main
+    call heap::init
+
+    push 9
+    call heap::alloc
+    pull  a
+    print a
+
+    push 9
+    call heap::alloc
+    pull  b
+    print b
+
+    push 19
+    call heap::alloc
+    pull  c
+    print c
+
+    push a
+    call heap::free
+    push b
+    call heap::free
+    push c
+    call heap::free
+
+
+
+
+    push 9
+    call heap::alloc
+    pull  a
+    print a
+
+    push 9
+    call heap::alloc
+    pull  b
+    print b
+
+    push 19
+    call heap::alloc
+    pull  c
+    print c
+
+    push a
+    call heap::free
+    push b
+    call heap::free
+    push c
+    call heap::free
