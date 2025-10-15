@@ -1,0 +1,34 @@
+
+use stack
+use flow
+use math
+
+
+label fac
+    call stack::swap
+
+    call stack::dup
+    pull n
+
+        push 1
+        call stack::swap
+        if n lesser 2 goto flow::return
+        call stack::swap
+        pull _
+
+    let n be n minus 1
+    push n
+    call fac
+    call math::mul
+
+    call stack::swap
+    return
+
+
+label main
+    push 5
+    call fac
+    pull _
+    print _
+    
+
