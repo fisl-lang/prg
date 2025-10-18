@@ -6,8 +6,6 @@ use math
 
 label fac
     call stack::swap
-
-    call stack::dup
     pull n
 
         push 1
@@ -16,6 +14,7 @@ label fac
         call stack::swap
         pull _
 
+    push n
     let n be n minus 1
     push n
     call fac
