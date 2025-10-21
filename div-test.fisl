@@ -1,0 +1,12 @@
+use math
+
+label main
+    push 12
+    push 3
+
+    call math::div
+
+    pull tmp
+    print tmp
+
+
