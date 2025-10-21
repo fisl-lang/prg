@@ -1,0 +1,146 @@
+#this program relies on the implementation supporting two's compilment
+#it does not work with the reference implementation
+
+use math
+
+# translate from: 
+#  https://rosettacode.org/wiki/Mandelbrot_set#Fixed_point_16_bit_arithmetic
+
+# 6 bits after the radix
+# therefore, factor of 2^6 = 64
+
+
+label main
+    let width be 32
+    let height be 22
+
+    let zoom be 3
+
+    #X1
+        #3.5 * 64 = 224
+        push 224
+        push zoom
+        call math::div
+        pull x-one
+    #X2
+        #2.25 * 64 = 144
+        let x-two be 144
+    #Y1
+        #3 * 64 = 192
+        push 192
+        push zoom
+        call math::div
+        pull y-one 
+    #Y2
+        #1.5 * 64 = 96
+        let y-two be 96
+    #LIMIT
+        #4 * 64 = 256
+        let limit be 256
+
+    push width
+    push zoom
+    call math::mul
+    pull zoomed-width
+
+    push height
+    push zoom
+    call math::mul
+    pull zoomed-height
+
+    let py be 0
+    label loop-y
+
+        let px be 0
+        label loop-x
+
+            #x0 = ((px*X1) / width) - X2
+            push px
+            push x-one
+            call math::mul
+            push width
+            call math::div
+            push x-two
+            call math::sub
+            pull x-zero
+
+            #y0 = ((py*Y1) / width) - Y2
+            push py
+            push y-one
+            call math::mul
+            push width
+            call math::div
+            push y-two
+            call math::sub
+            pull y-zero
+
+            let x be 0
+            let y be 0
+
+            let i be 0
+            label loop-z
+                let i be i plus 1
+
+                push x
+                push x
+                call math::mul
+                push 64
+                call math::div
+                pull x-sqr
+
+
+                push y
+                push y
+                call math::mul
+                push 64
+                call math::div
+                pull y-sqr
+
+
+
+                push x-sqr
+                push y-sqr
+                call math::sub
+                push x-zero
+                call math::add
+                pull xt
+
+                push x
+                push y
+                call math::mul
+                push 64
+                call math::div
+                call stack::dup
+                call math::add
+                push y-zero
+                call math::add
+                pull y
+
+                let x be xt
+                let dist-sqr be x-sqr plus y-sqr 
+                
+                push 0
+                push 1
+                if i lesser 20 call stack::swap
+                call stack::drop
+
+                push 0
+                call stack::swap
+                if dist-sqr lesser limit call stack::swap
+                call stack::drop
+
+            pull cond
+            if cond unequal 0 goto loop-z
+
+            let char be i plus 97
+            output char
+
+        let px be px plus 1 
+        if px lesser zoomed-width goto loop-x
+
+        output newline
+    
+    let py be py plus 1 
+    if py lesser zoomed-height goto loop-y
+
+
