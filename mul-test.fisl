@@ -1,6 +1,3 @@
-
-use stack
-use flow
 use math
 
 label main
@@ -9,8 +6,8 @@ label main
 
     call math::mul
 
-    pull _
-    print _
+    pull tmp
+    print tmp
 
 
 
