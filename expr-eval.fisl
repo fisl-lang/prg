@@ -1,0 +1,203 @@
+#disclaimer: written while high
+
+use heap
+
+# node structure
+# 
+# p+0 -> Type::Int
+#   0 -> Invalid
+#   1 -> Leaf
+#   2 -> Add
+#   3 -> Sub
+#   4 -> Mul,
+# 
+# p+1 -> Content::Int
+# p+2 -> Left ::Node
+# p+3 -> Right::Node
+
+
+
+let parse::expr be 0
+label parse::next
+    let parse::expr be parse::expr plus 1
+    return
+label parse::peek
+    read parse::char from parse::expr
+    print parse::char
+    return
+label parse::pop
+    call parse::peek
+    call parse::next
+    return
+
+
+
+
+let type    be 0
+let content be 0
+let lhs     be 0
+let rhs     be 0
+
+label parse::object
+    push 4 
+    call heap::allocate
+    call stack::dup
+    pull ptr
+    call stack::swap
+
+    write type into ptr
+    let ptr be ptr plus 1
+    write content into ptr
+    let ptr be ptr plus 1
+    write lhs into ptr
+    let ptr be ptr plus 1
+    write rhs into ptr
+
+    return
+
+
+
+
+label parse::expr-stage-one
+    #setup call to term
+    push 2  
+    call stack::swap
+    return
+
+label parse::expr-stage-two::done
+    call stack::swap
+
+    #step op char
+    call parse::next
+
+    #setup call to expression
+    push 1
+    call stack::swap
+    return
+
+label parse::expr-stage-two::plus
+    push 2
+    goto parse::expr-stage-two::done
+label parse::expr-stage-two::minus
+    push 3
+    goto parse::expr-stage-two::done
+label parse::expr-stage-two::times
+    push 4
+    goto parse::expr-stage-two::done
+
+label parse::expr-stage-two
+    call parse::peek
+    if parse::char equal 43 goto parse::expr-stage-two::plus
+    if parse::char equal 45 goto parse::expr-stage-two::minus
+    if parse::char equal 42 goto parse::expr-stage-two::times
+
+    #enable fall-through
+    let routine be 0
+    return
+
+label parse::expr-stage-thr
+    call stack::swap
+    pull rhs
+    call stack::swap
+    pull type
+    call stack::swap
+    pull lhs
+
+    goto parse::object
+
+
+label parse::term-stage-two
+    let routine be 0
+
+    #pop closing bracket
+    call parse::pop
+
+    return
+
+label parse::term-stage-one::continue
+    #setup call to expression
+    push 1
+    call stack::swap
+    return
+
+label parse::term-stage-one
+    call parse::pop 
+
+    if parse::char equal 40 goto parse::term-stage-one::continue
+
+    #enable fall-through
+    let routine be 0
+
+    #leaf
+    let type be 1
+    let content be parse::char minus 48
+
+    goto parse::object
+
+
+
+#mutual recursion helper
+#(Routine::Int) => (::Node)
+# 1 -> Expression
+# 2 -> Term
+label parse::rec
+    call stack::swap
+    #routine is set to zero as fall-through
+    pull routine
+
+    if routine equal 1 call parse::expr-stage-one
+    if routine equal 2 call parse::term-stage-one
+
+    push routine
+    call stack::swap
+        if routine unequal 0 call parse::rec
+    call stack::swap
+    pull routine
+
+    if routine equal 1 call parse::expr-stage-two
+    if routine equal 2 call parse::term-stage-two
+
+    push routine
+    call stack::swap
+        if routine unequal 0 call parse::rec
+    call stack::swap
+    pull routine
+
+    if routine equal 1 call parse::expr-stage-thr
+
+    call stack::swap
+    return
+
+
+
+    
+#(Expr::String) => (::Node)
+label parse
+    call stack::swap
+    pull parse::expr
+
+    #call to expr
+    push 1
+    call parse::rec
+
+    call stack::swap
+    return
+
+
+
+
+label main
+    string "((1+2)*4)-2" into expr
+
+    push expr
+    call parse
+
+
+
+
+
+
+
+
+
+
