@@ -1,6 +1,7 @@
 #disclaimer: written while high
 
 use heap
+use math
 
 # node structure
 # 
@@ -23,7 +24,6 @@ label parse::next
     return
 label parse::peek
     read parse::char from parse::expr
-    print parse::char
     return
 label parse::pop
     call parse::peek
@@ -186,13 +186,89 @@ label parse
 
 
 
+
+
+let res be 0
+label eval::done
+    push res
+    call stack::swap
+    return
+
+let node be 0
+label eval::leaf
+    let node be node plus 1
+    read res from node
+    goto eval::done
+
+let res-right be 0
+let res-left  be 0
+label eval::add
+    let res be res-left plus res-right
+    goto eval::done
+label eval::sub
+    let res be res-left minus res-right
+    goto eval::done
+label eval::mul
+    push res-left
+    push res-right
+    call math::mul
+    pull res
+    goto eval::done
+
+
+
+
+#(Root::Node) => (Res::Int)
+label eval
+    call stack::swap
+    pull node
+
+    read type from node
+    if type equal 1 goto eval::leaf
+    push type
+    
+        let node be node plus 2
+        read node-left from node
+        let node be node plus 1
+        read node-right from node
+
+        push node-left
+        push node-right
+
+        call eval
+        call stack::swap
+        call eval
+
+        pull res-left
+        pull res-right
+
+    pull type
+    if type equal 2 goto eval::add
+    if type equal 3 goto eval::sub
+    if type equal 4 goto eval::mul
+
+    #invalid defaults to zero
+    push 0
+    call stack::swap
+    return
+
+
+
+
+
 label main
-    string "((1+2)*4)-2" into expr
+    #string "((1+2)*4)-2" into expr
+    string "(8-3)*(2+5)" into expr
 
     push expr
     call parse
+    pull root
 
+    push root
+    call eval
+    pull res
 
+    print res
 
 
 
