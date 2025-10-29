@@ -18,7 +18,7 @@ use math
 
 
 
-let parse::expr be 0
+let parse::expr beknown
 label parse::next
     let parse::expr be parse::expr plus 1
     return
@@ -33,10 +33,10 @@ label parse::pop
 
 
 
-let type    be 0
-let content be 0
-let lhs     be 0
-let rhs     be 0
+let type    beknown
+let content beknown
+let lhs     beknown
+let rhs     beknown
 
 label parse::object
     push 4 
@@ -188,20 +188,20 @@ label parse
 
 
 
-let res be 0
+let res beknown
 label eval::done
     push res
     call stack::swap
     return
 
-let node be 0
+let node beknown
 label eval::leaf
     let node be node plus 1
     read res from node
     goto eval::done
 
-let res-right be 0
-let res-left  be 0
+let res-right beknown
+let res-left  beknown
 label eval::add
     let res be res-left plus res-right
     goto eval::done
@@ -258,7 +258,8 @@ label eval
 
 label main
     #string "((1+2)*4)-2" into expr
-    string "(8-3)*(2+5)" into expr
+    string "2+2" into expr
+    #string "(8-3)*(2+5)" into expr
 
     push expr
     call parse
