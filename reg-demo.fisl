@@ -1,0 +1,147 @@
+
+use heap
+use flow
+use string
+
+
+# LR Parser Demo
+
+# rule structure
+# 
+# p+0 -> Next::Rule
+# p+1 -> State::String
+# p+2 -> Read::Nullable<Char>
+# p+3 -> Goto::Nullable<String>
+
+
+
+# (State::String, Read, Goto)
+let base-rule be 0
+label init-table-entry
+    call stack::swap
+    pull goto
+    call stack::swap
+    pull read
+    call stack::swap
+    pull state
+
+    push 4
+    call heap::allocate
+    pull rule
+
+    push rule
+        stream base-rule into rule
+        stream state     into rule
+        stream read      into rule
+        stream goto      into rule
+    pull rule    
+
+    let base-rule be rule
+    return
+
+label init-table
+    string "s0"   into state-zero
+    string "s1"   into state-one
+    string "s2"   into state-two
+    string "accept" into state-accept
+    string "reject" into state-reject
+
+    #core states
+    push state-zero
+    push 49
+    push state-one
+    call init-table-entry
+
+    push state-one
+    push 48
+    push state-two
+    call init-table-entry
+
+    push state-one
+    push 49
+    push state-two
+    call init-table-entry
+
+    push state-two
+    push 48
+    push state-one
+    call init-table-entry
+
+    #exits
+    push state-zero
+    push 0
+    push state-accept
+    call init-table-entry
+
+    push state-one
+    push 0
+    push state-reject
+    call init-table-entry
+
+    push state-two
+    push 0
+    push state-reject
+    call init-table-entry
+
+    return
+
+
+let source beknown
+let state  beknown
+
+label update
+    let iterator be base-rule
+    stream char from source
+
+label update::loop
+    if iterator equal 0 goto flow::return
+
+    stream next-rule  from iterator
+    stream ref-state  from iterator
+    stream ref-char   from iterator
+    stream next-state from iterator
+
+    #update state walker
+    let iterator be next-rule
+
+    #check state
+    if ref-state unequal state goto update::loop
+    if ref-char  unequal char  goto update::loop
+
+    #state match
+    let state be next-state
+
+    return
+
+    
+
+label run
+    let state be state-zero
+
+label run::loop 
+    call update
+
+    if state equal state-reject goto flow::return
+    if state equal state-accept goto flow::return
+    goto run::loop
+
+
+
+
+
+label main    
+    call init-table
+    string "11" into source
+
+    call run
+
+    push state
+    call string::print
+    output newline
+    
+
+
+
+
+
+
