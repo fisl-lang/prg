@@ -59,7 +59,7 @@ label init-table
 
     push state-one
     push 49
-    push state-two
+    push state-zero
     call init-table-entry
 
     push state-two
@@ -90,6 +90,10 @@ let source beknown
 let state  beknown
 
 label update
+    push state
+    call string::print
+    output newline
+
     let iterator be base-rule
     stream char from source
 
@@ -131,7 +135,7 @@ label run::loop
 
 label main    
     call init-table
-    string "11" into source
+    string "10101" into source
 
     call run
 
