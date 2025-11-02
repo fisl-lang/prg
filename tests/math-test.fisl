@@ -1,0 +1,22 @@
+
+use stack
+use math
+
+
+label main
+    push 6
+    call stack::dup
+
+    call math::inc
+    pull x
+    print x
+
+    call math::dec
+    pull x
+    print x
+
+
+
+
+
+
