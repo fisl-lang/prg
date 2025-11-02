@@ -1,0 +1,55 @@
+
+use lnk
+
+label main
+    call lnk::allocate
+    pull head
+
+    let index be 0
+    let tail be head
+    label create-loop
+        call lnk::allocate
+        pull new
+
+        push new
+        push tail
+        call lnk::insert
+
+        let tail be new
+
+        let index be index plus 1
+    if index lesser 9 goto create-loop
+
+
+    let index be 0
+    let iter be head
+    label populate-loop
+        let index be index plus 1
+
+        push iter
+        push index
+        call lnk::set
+
+        push iter
+        call lnk::next
+        pull iter
+    if iter unequal 0 goto populate-loop
+
+
+    let iter be head
+    label print-loop
+        push iter
+        call lnk::get
+        pull elem
+
+        print elem
+
+        push iter
+        call lnk::next
+        pull iter
+    if iter unequal 0 goto print-loop
+
+
+
+
+
