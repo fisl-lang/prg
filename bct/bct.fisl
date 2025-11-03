@@ -1,0 +1,101 @@
+
+use stack
+use chunk
+use string
+use ringbuf
+
+
+let queue beknown
+label print-queue
+    allocate 1 words for print-queue-tmp-field
+
+    read head from queue at Ringbuf::Head
+    read tail from queue at Ringbuf::Tail
+
+    label print-queue::loop
+        read entry from tail
+        let entry be entry plus 48
+        output entry
+
+        write tail into print-queue-tmp-field
+        push queue
+        push print-queue-tmp-field
+        call ringbuf::advance-ptr
+        read tail from print-queue-tmp-field
+    if head unequal tail goto print-queue::loop
+    output newline
+    return
+
+
+label init
+    push 64
+    call ringbuf::create
+    pull queue
+
+
+    string "010001;100;100100100;;;;" into prog
+    string "100100100" into data
+
+    #upload data to ringbuffer
+        read char from data
+    label loop-upload
+        let char be char minus 48 
+        push queue
+        push char
+        call ringbuf::put
+
+        let data be data plus 1
+        read char from data
+    if char unequal 0 goto loop-upload
+
+
+    push prog
+    call string::len
+    pull prog-len
+    let prog-end be prog-len plus prog
+
+    return
+
+
+
+label run::discard
+    push queue
+    call ringbuf::get
+    call stack::drop
+    return
+
+let command beknown
+label run::append
+    push queue
+    call ringbuf::peek
+    pull tail
+    if tail equal 0 goto flow::return
+
+    let value be command minus 48
+    push queue
+    push value
+    call ringbuf::put
+    return
+    
+
+label run
+    let exec-ptr be prog
+    call print-queue
+
+label run::loop
+    if exec-ptr equal prog-end goto run
+
+    read command from exec-ptr
+    let exec-ptr be exec-ptr plus 1
+
+    if command   equal 59 call run::discard
+    if command unequal 59 call run::append
+
+    goto run::loop
+
+
+label main
+    call init
+    call run
+
+
