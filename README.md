@@ -10,6 +10,7 @@ Notable files and directories.
 
 - **expr-eval.fisl**: recursive descent expression parser and evaluator.
 - **reg-demo.fisl**: parser demo for regular language consisting binary string which are multiples of three.
+- **bct**: BCT language interpreter
 - **tests**: test programs, mainly used during compiler development.
 
 
