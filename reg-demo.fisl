@@ -8,10 +8,16 @@ use string
 
 # rule structure
 # 
-# p+0 -> Next::Rule
-# p+1 -> State::String
-# p+2 -> Read::Nullable<Char>
-# p+3 -> Goto::Nullable<String>
+# +0 -> Next  :: Rule
+# +1 -> State :: String
+# +2 -> Read  :: Nullable<Char>
+# +3 -> Goto  :: Nullable<String>
+
+constant Rule::Next  be 0
+constant Rule::State be 1
+constant Rule::Read  be 2
+constant Rule::Goto  be 3
+constant Rule        be 4
 
 
 
@@ -25,15 +31,15 @@ label init-table-entry
     call stack::swap
     pull state
 
-    push 4
+    push Rule
     call heap::allocate
     pull rule
 
     push rule
-        stream base-rule into rule
-        stream state     into rule
-        stream read      into rule
-        stream goto      into rule
+        write base-rule into rule at Rule::Next
+        write state     into rule at Rule::State
+        write read      into rule at Rule::Read
+        write goto      into rule at Rule::Goto
     pull rule    
 
     let base-rule be rule
@@ -95,15 +101,16 @@ label update
     output newline
 
     let iterator be base-rule
-    stream char from source
+    read char from source
+    let source be source plus 1
 
 label update::loop
     if iterator equal 0 goto flow::return
 
-    stream next-rule  from iterator
-    stream ref-state  from iterator
-    stream ref-char   from iterator
-    stream next-state from iterator
+    read next-rule    from iterator at Rule::Next
+    read ref-state    from iterator at Rule::State
+    read ref-char     from iterator at Rule::Read
+    read next-state   from iterator at Rule::Goto
 
     #update state walker
     let iterator be next-rule
