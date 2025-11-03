@@ -1,0 +1,9 @@
+
+constant a be 3
+constant b be 2
+
+label main
+    let c be a plus b
+    print c
+
+    

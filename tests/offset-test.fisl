@@ -1,0 +1,16 @@
+
+label main
+    allocate 10 words for array
+
+    write 2 into array at 2
+    read x from array at 2
+
+    write 10 into array
+    read y from array
+
+    print x
+    print y
+
+
+
+
