@@ -26,27 +26,18 @@ label main
     label populate-loop
         let index be index plus 1
 
-        push iter
-        push index
-        call lnk::set
-
-        push iter
-        call lnk::next
-        pull iter
+        write index into iter at Link::Content
+        read iter from iter at Link::Next
     if iter unequal 0 goto populate-loop
 
 
     let iter be head
     label print-loop
-        push iter
-        call lnk::get
-        pull elem
+        read elem from iter at Link::Content
 
         print elem
 
-        push iter
-        call lnk::next
-        pull iter
+        read iter from iter at Link::Next
     if iter unequal 0 goto print-loop
 
 
