@@ -2,6 +2,7 @@
 
 use heap
 use math
+use string
 
 # node structure
 # 
@@ -254,14 +255,47 @@ label eval
 
 
 
+let buffer beknown
+let char   beknown
+
+label read-input::push
+    write char into buffer
+    let buffer be buffer plus 1
+    return
+
+#(Buffer::Ptr)
+label read-input
+    call stack::swap
+    pull buffer
+
+label read-input::loop
+    input char
+
+    if char unequal 32 call read-input::push
+    if char unequal 10 goto read-input::loop
+
+    #terminator
+    write 0 into buffer
+    return
+
+
+
+
+
 
 
 label main
     #string "((1+2)*4)-2" into expr
-    string "2+2" into expr
+    #string "2+2" into expr
     #string "(8-3)*(2+5)" into expr
 
-    push expr
+    allocate 100 words for input-buffer
+
+    push input-buffer
+    call read-input
+
+
+    push input-buffer
     call parse
     pull root
 
