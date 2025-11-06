@@ -1,0 +1,33 @@
+
+use dyn
+
+label main
+    call dyn::allocate
+    pull a
+
+    
+    let i be 0
+    label populate
+        push a
+        push i
+        call dyn::push
+
+        let i be i plus 1
+    if i lesser 20 goto populate
+
+    read cont from a at Dyn::Container
+    read size from a at Dyn::Size
+
+    label print
+        read elem from cont
+        let cont be cont plus 1
+
+        print elem
+
+        let i be i minus 1
+    if i greater 0 goto print
+
+    
+        
+
+    
