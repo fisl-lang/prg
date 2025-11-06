@@ -3,29 +3,41 @@ use dyn
 
 label main
     call dyn::allocate
-    pull a
-
+    pull list
     
-    let i be 0
-    label populate
-        push a
-        push i
-        call dyn::push
+    push list
+    push 3
+    call dyn::push
+    push list
+    push 1
+    call dyn::push
+    push list
+    push 4
+    call dyn::push
+    push list
+    push 1
+    call dyn::push
+    push list
+    push 5
+    call dyn::push
+    push list
+    push 9
+    call dyn::push
+    push list
+    push 2
+    call dyn::push
 
-        let i be i plus 1
-    if i lesser 20 goto populate
-
-    read cont from a at Dyn::Container
-    read size from a at Dyn::Size
+    read cont from list at Dyn::Container
+    read size from list at Dyn::Size
 
     label print
         read elem from cont
-        let cont be cont plus 1
+        let cont be cont plus 1 
 
         print elem
 
-        let i be i minus 1
-    if i greater 0 goto print
+        let size be size minus 1
+    if size greater 0 goto print
 
     
         
