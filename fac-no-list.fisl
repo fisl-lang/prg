@@ -1,0 +1,62 @@
+
+label swap
+    pull ret
+    pull a
+    pull b
+    push a
+    push b
+    push ret
+    return
+    
+    
+
+#(A::Int, B::Int) => (A*B::Int)
+label mul
+    call swap
+    pull b
+    call swap
+    pull a
+
+    let prod be 0
+
+    label mul::loop
+        let prod be prod plus a
+        let b be b minus 1
+    if b greater 0 goto mul::loop
+
+    push prod
+    call swap
+    return
+        
+
+label flow-return
+    return
+
+#(N::Int) => (N!::Int)
+label fac
+    call swap
+    pull n
+
+        push 1
+        call swap
+        if n lesser 2 goto flow-return
+        call swap
+        pull _
+
+    push n
+    let n be n minus 1
+    push n
+    call fac
+    call mul
+
+    call swap
+    return
+
+
+label main
+    push 5
+    call fac
+    pull _
+    print _
+    
+

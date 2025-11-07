@@ -1,0 +1,12 @@
+
+label main
+    string "hello world" into str
+
+    label loop        
+        read char from str
+        let str be str plus 1
+
+        output char
+    if char unequal 0 goto loop
+
+    output newline
